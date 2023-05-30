@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #wrapper {
+            width: 1100px;
+            height: 600px;
+            background: yellow;
+            margin: auto;
+        }
+
+        #input_side {
+            width: 150px;
+            height: 100%;
+            background: lemonchiffon;
+            float: left;
+            text-align: center;
+        }
+
+        #input_side * {
+            width: 95%;
+            margin: 2px;
+        }
+
+        #content {
+            width: 800px;
+            height: 100%;
+            background: lightcyan;
+            float: left;
+        }
+
+        #list_side {
+            width: 150px;
+            height: 100%;
+            background: lightgoldenrodyellow;
+            float: left;
+        }
+
+        #food {
+            height: 160px;
+        }
+    </style>
+    <script>
+        let content; //맵이 랜더링될 div
+        let food;
+        let map; //구글의 맵 객체, 맵을 표현
+        let storeList = [];//모든 맛집을 저장해 놓을 배열, 일종의 이차원 배열의 역할
+        let markerList=[]; ///마커를 저장해 놓을 배열
+        let store;//맛집명
+        let msg;//평가글
+        let lati; //위도
+        let longi; //경도
+        let sel;//선택 이미지
+        let list_side;//상점들의 목록이 출력될 div영역
+        
+
+        //구글맵을 div에 시각화 시키자
+        function createMap() {
+            //어떤 스타일의 맵을 생성할지 속성정의
+            let mapProp = {
+                //맵의 카메라의 중심점
+                center: new google.maps.LatLng(37.509329, 127.101485),
+                //카메라의 확대비율
+                zoom: 15,
+            };
+
+            map = new google.maps.Map(content, mapProp);
+        }
+
+        //선택한 이미지 미리보기
+        function preview(src) {
+            food.src = src;
+        }
+
+        //스토에 리스트에 쌓여이쓴 상점들을 우측 영역에 출력
+        function getList() {
+            let tag = ""; //테이블을 쌓아둘 변수
+            tag += "<table border=\"1px\" width=\"100%\">";
+            //맛집 수 만큼 반복문 실행  
+            for (let i = 0; i < storeList.length; i++) {
+
+                let store = storeList[i];//하나의 맛집을 꺼내기
+                console.log(i, "번쨰 상점은", store);
+
+                tag += "<tr>";
+                tag += "<td><img src=\"" + store.food + "\" width=\"25px\"></td>";
+                tag += "<td>" + store.store + "</td>";
+                tag += "</tr>";
+            }
+            tag += "</table>";
+
+            list_side.innerHTML = tag;
+        }
+
+        //맛집 배열에 들어있는 모든 맛집정보를 구글 지도에 표시하기
+        function showIcon() {
+            //마커를 반복문으로 생성하기 전에, 기종에 존재하는 마커가 있다면 반복문만큼 제거하자
+            for(let i=0; i<markerList.length; i++){
+                markerList[i].setMap(null);
+            }
+
+            for (let i = 0; i < storeList.length; i++) {
+                let store = storeList[i];//배열에서 샘플로 하나의 맛집꺼내기
+
+                //위도, 경도 객체 생성
+                let pos = new google.maps.LatLng(store.lati, store.longi)
+
+                //마커 생성
+                let marker = new google.maps.Marker({
+                    position: pos,
+                    animation: google.maps.Animation.BOUNCE,
+                    icon:{
+                        url: store.food,
+                        scaledSize: new google.maps.Size(35, 35)
+                    }
+                });
+
+                //맵에 반영
+                marker.setMap(map);
+
+                //마커 배열에 추가해 놓기(나중에 한꺼번에 삭제할 예정)
+                markerList.push(marker);
+
+                let infowindow = new google.maps.InfoWindow({
+                    content: store.msg
+                });
+
+                infowindow.open(map, marker);
+
+            }
+        }
+
+        //왼쪽 맛집등록폼에 입력한 모든 내용을 어딘가에 저장해 놓은 후
+        //지도에 표시도 하고, 우측 사이드 표로 출력도하자
+        function regist() {
+            //1건의 맛집에 대한 정보는 1개의 JSON 객체로 담자
+            let obj = {
+                store: store.value,
+                msg: msg.value,
+                lati: lati.value,
+                longi: longi.value,
+                food: sel.value
+            };
+            //console.log(obj);
+            storeList.push(obj);//현재상점 정보를 목록에 추가
+            console.log("현재까지 등록된 상점은", storeList.length);
+            getList();//등록된 목록 보여주기 호출
+            showIcon(); //지도에 보여주기 호출
+        }
+
+        //문서와 맵이 모두 로드되면..
+        function init() {
+            content = document.getElementById("content");
+            food = document.getElementById("food");
+            list_side = document.getElementById("list_side");
+            store = form1.store;
+            msg = form1.msg;
+            lati = form1.lati;
+            longi = form1.longi;
+            sel = form1.sel;
+            createMap();
+        }
+    </script>
+</head>
+
+<body>
+    <div id="wrapper">
+        <div id="input_side">
+            <!-- 맛집 등록폼 -->
+            <form name="form1">
+                <!--추후 서버 프로그래밍 시 html문서의 입력내용을 서버에 전송할떄
+                는 전송 변수역할을 name이 해줄수 있다. id는 불가  -->
+                <input type="text" placeholder="상호입력..." name="store">
+                <textarea cols="19" rows="4" name="msg"></textarea>
+                <input type="text" placeholder="위도입력" name="lati">
+                <input type="text" placeholder="경도입력" name="longi">
+                <select onchange="preview(this.value)" name="sel">
+                    <option value="">이미지선택</option>
+                    <option value="../images/떡.jpg">떡볶이</option>
+                    <option value="../images/돈까스.jpg">돈까스</option>
+                    <option value="../images/햄버거.jpg">햄버거</option>
+                    <option value="../images/비빔밥.jpg">비빔밥</option>
+                </select>
+                <img id="food">
+                <!--  전통적인 버튼
+                <input type="button" value="등록">
+                -->
+                <!-- 
+                html5는 스마트폰등 차세대 디바이스를 위해 출시
+                form안에 두면 기본적으로 submit() 즉 전송 시도
+                -->
+                <button type="button" onClick="regist()">등록</button>
+            </form>
+
+        </div>
+        <div id="content"></div>
+        <div id="list_side"></div>
+    </div>
+</body>
+
+</html>
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOf1gkFNaN9y934GUWbJo5kbKqzH38aLs&callback=init"></script>

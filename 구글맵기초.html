@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #myMap {
+            width: 800px;
+            height: 500px;
+            background: yellow;
+            margin: auto;
+        }
+    </style>
+    <script>
+        //구글에서 제공되는 맵이 성공적으로 로드되면, 호출될 함수
+        function loadMap() {
+            //alert("맵 가져오기 성공");
+
+            //가져온 맵을 우리의 div에 출력한다
+
+            //맵의 속성 지정... 위도, 경도, 카메라의 줌...
+            let mapProp = {
+                center: new google.maps.LatLng(37.509329, 127.101485),
+                zoom: 15,
+            };
+
+            //맵 객체 생성
+            let map = new google.maps.Map(document.getElementById("myMap"), mapProp);
+
+            //지도위에 마커 추가하기
+
+            //1)마커객체 생성(생성자의 매개변수로 위도, 경도가 와야 함)
+
+            //아이콘의 크기를 조정하기 위해, icon json으로 원하는 속성들을 세팅한 후
+            //아래의 icon 변수 자리에 대입
+            let icon = {
+                url: "../images/떡.jpg",
+                scaledSize: new google.maps.Size(35, 35)
+            }
+            let marker = new google.maps.Marker({
+                position: mapProp.center,
+                animation: google.maps.Animation.BOUNCE,
+                icon: icon
+            });
+
+            //2)생성한 마커를 어느 맵객체에 적용할지를 명시
+            marker.setMap(map);
+
+            //마커위에 정보창 띄우기
+            var infowindow = new google.maps.InfoWindow({
+                content: "여기가 떡볶이 맛집"
+            });
+
+            //지정한 마크에 윈도우 띄우기
+            infowindow.open(map,marker);
+
+        }
+    </script>
+</head>
+
+<body>
+    <div id="myMap"></div>
+</body>
+
+</html>
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOf1gkFNaN9y934GUWbJo5kbKqzH38aLs&callback=loadMap"></script>

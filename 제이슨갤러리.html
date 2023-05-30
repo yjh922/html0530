@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #wrapper {
+            width: 500px;
+            height: 700px;
+            background: yellow;
+            margin: auto;
+        }
+
+        #header {
+            width: 100%;
+            height: 100px;
+            background: lightblue;
+            text-align: center;
+            font-size: 70px;
+        }
+
+        #photo {
+            width: 100%;
+            height: 400px;
+            background: lightcoral;
+        }
+
+        #pic {
+            width: 100%;
+            height: 100%;
+        }
+
+        #msg {
+            width: 100%;
+            height: 100px;
+            background: lemonchiffon;
+            text-align: center;
+            font-size: 70px;
+        }
+
+        #footer {
+            width: 100%;
+            height: 100px;
+            background: lightgreen;
+            text-align: center;
+        }
+
+        #footer button {
+            margin-left: 10px;
+            margin-top: 40px;
+        }
+    </style>
+    <script>
+        let header;
+        let pic;
+        let msg;
+        let index=0;
+        let flag=true;
+        let flagList = {
+            flags: [
+                {
+                    "fileName": "0.png",
+                    "img":"../images/animals/0.png" ,
+                    "msg": "펭귄",
+                },
+                {
+                    "fileName": "1.png",
+                    "img":"../images/animals/1.png" ,
+                    "msg": "기린",
+                },
+                {
+                    "fileName": "2.png",
+                    "img":"../images/animals/2.png" ,
+                    "msg": "다람쥐",
+                },
+                {
+                    "fileName": "3.png",
+                    "img":"../images/animals/3.png" ,
+                    "msg": "북극곰",
+                },
+                {
+                    "fileName": "4.png",
+                    "img":"../images/animals/4.png" ,
+                    "msg": "사자",
+                },
+                {
+                    "fileName": "5.png",
+                    "img":"../images/animals/5.png" ,
+                    "msg": "악어",
+                },
+                {
+                    "fileName": "6.png",
+                    "img":"../images/animals/6.png" ,
+                    "msg": "얼룩말",
+                },
+                {
+                    "fileName": "7.png",
+                    "img":"../images/animals/7.png" ,
+                    "msg": "캥거루",
+                },
+                {
+                    "fileName": "8.png",
+                    "img":"../images/animals/8.png" ,
+                    "msg": "코끼리",
+                },
+                {
+                    "fileName": "9.png",
+                    "img":"../images/animals/9.png" ,
+                    "msg": "코알라",
+                }
+
+           ]
+
+        };
+
+        function createFile(){
+            
+            header.innerText=flagList.flags[index].fileName;
+            pic.src=flagList.flags[index].img;
+            msg.innerText=flagList.flags[index].msg;
+            
+            
+        }
+        function init() {
+            header = document.getElementById("header");
+            pic = document.getElementById("pic");
+            msg = document.getElementById("msg");
+            createFile();
+        }
+
+        addEventListener("load", function () {
+            init();
+            document.getElementById("bt_next").addEventListener("click", function(){
+                index++;
+                createFile();
+            })
+            document.getElementById("bt_prev").addEventListener("click", function(){
+                index--;
+                createFile();
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div id="wrapper">
+        <div id="header"></div>
+        <div id="photo">
+            <img id="pic">
+        </div>
+        <div id="msg"></div>
+        <div id="footer">
+            <button id="bt_prev">◀</button>
+            <button id="bt_auto">auto</button>
+            <button id="bt_stop">stop</button>
+            <button id="bt_next">▶</button>
+        </div>
+    </div>
+</body>
+
+</html>
